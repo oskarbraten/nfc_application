@@ -34,4 +34,6 @@ public class MainActivity extends Activity {
             startActivity(new Intent(this, PayActivity.class));
         });
     }
+
+
 }
