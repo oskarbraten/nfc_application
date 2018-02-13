@@ -10,16 +10,12 @@ import android.widget.Toast;
 
 public class MainActivity extends Activity {
 
-    public static final String MIME_TEXT_PLAIN = "text/plain";
     private NfcAdapter nfcAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
-
 
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
 
