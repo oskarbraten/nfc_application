@@ -1,6 +1,7 @@
 package no.hvl.dat153.nfc_project;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
@@ -38,5 +39,11 @@ public class PayActivity extends Activity {
         mNfcAdapter.setOnNdefPushCompleteCallback((NfcEvent nfcEvent) -> {
             finish();
         }, this);
+
+        SharedPreferences appPref = getSharedPreferences("AppPref",MODE_PRIVATE);
+        float blance = appPref.getFloat("blance", Float.NEGATIVE_INFINITY);
+
+        Toast.makeText(this, "*****  " + blance, Toast.LENGTH_LONG).show();
+
     }
 }

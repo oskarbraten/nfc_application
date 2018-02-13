@@ -37,9 +37,9 @@ public class MainActivity extends Activity {
 
 
         SharedPreferences appPref = getSharedPreferences("AppPref", MODE_PRIVATE);
-        float beloep = appPref.getFloat("beloep", Float.NEGATIVE_INFINITY);
-        if (beloep == Float.NEGATIVE_INFINITY) {
-            appPref.edit().putFloat("beloep", (float) 100.0);
+        float blance = appPref.getFloat("blance", Float.NEGATIVE_INFINITY);
+        if (blance == Float.NEGATIVE_INFINITY) {
+            appPref.edit().putFloat("blance", (float) 100.0);
             appPref.edit().apply();
         }
     }
