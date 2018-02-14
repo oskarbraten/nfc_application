@@ -36,7 +36,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".PayActivity" />
-        <activity android:name=".AddGrunkerActivity"></activity>
+        <activity android:name=".AddGrunkerActivity" />
     </application>
 
 </manifest>
