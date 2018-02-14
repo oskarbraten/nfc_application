@@ -14,7 +14,6 @@ import android.widget.Toast;
 public class MainActivity extends Activity {
 
     private NfcAdapter nfcAdapter;
-
     private TextView balanceLabel;
 
     @Override
@@ -23,17 +22,11 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         SharedPreferences appPref = getSharedPreferences("app_preferences", MODE_PRIVATE);
-        int balance = appPref.getInt("balance", Integer.MIN_VALUE);
 
-        if (balance == Integer.MIN_VALUE) {
-            appPref.edit().putInt("balance", 100);
-            appPref.edit().apply();
-
-            balance = 100;
-        }
+        final int currentBalance = appPref.getInt("balance", 100);
 
         balanceLabel = findViewById(R.id.balanceLabel);
-        balanceLabel.setText(Integer.toString(balance));
+        balanceLabel.setText(Integer.toString(currentBalance));
 
 
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
@@ -52,14 +45,19 @@ public class MainActivity extends Activity {
         paymentBtn.setOnClickListener((View v) -> {
             EditText amountField = findViewById(R.id.amountField);
 
-            Intent intent = new Intent(this, PayActivity.class);
-            intent.putExtra("amount", Integer.parseInt(amountField.getText().toString()));
 
-            startActivity(intent);
+            int amount = Integer.parseInt(amountField.getText().toString());
+
+            if (amount < 0) {
+                Toast.makeText(this, "Invalid amount.", Toast.LENGTH_SHORT).show();
+            } else if (currentBalance - amount < 0) {
+                Toast.makeText(this, "Not enough funds.", Toast.LENGTH_SHORT).show();
+            } else {
+                Intent intent = new Intent(this, PayActivity.class);
+                intent.putExtra("amount", amount);
+
+                startActivity(intent);
+            }
         });
     }
-
-
-
-
 }
