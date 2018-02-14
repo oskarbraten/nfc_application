@@ -59,12 +59,4 @@ public class PayActivity extends Activity {
             });
         }, this);
     }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-
-        mNfcAdapter.setNdefPushMessage(null, this);
-        mNfcAdapter.setOnNdefPushCompleteCallback(null, this);
-    }
 }
