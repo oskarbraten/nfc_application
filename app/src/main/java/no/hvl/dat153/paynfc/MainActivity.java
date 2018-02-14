@@ -1,4 +1,4 @@
-package no.hvl.dat153.nfc_project;
+package no.hvl.dat153.paynfc;
 
 import android.app.Activity;
 import android.content.Intent;

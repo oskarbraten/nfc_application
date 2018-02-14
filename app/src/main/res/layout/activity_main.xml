@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="no.hvl.dat153.nfc_project.MainActivity">
+    tools:context="no.hvl.dat153.paynfc.MainActivity">
 
     <TextView
         android:id="@+id/textView3"

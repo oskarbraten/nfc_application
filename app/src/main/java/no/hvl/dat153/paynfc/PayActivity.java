@@ -1,4 +1,4 @@
-package no.hvl.dat153.nfc_project;
+package no.hvl.dat153.paynfc;
 
 import android.app.Activity;
 import android.nfc.NdefMessage;
@@ -36,6 +36,8 @@ public class PayActivity extends Activity {
         mNfcAdapter.setNdefPushMessage(msg, this);
 
         mNfcAdapter.setOnNdefPushCompleteCallback((NfcEvent nfcEvent) -> {
+            //mNfcAdapter.disableForegroundDispatch(this);
+            mNfcAdapter.setNdefPushMessage(null, this);
             finish();
         }, this);
     }
