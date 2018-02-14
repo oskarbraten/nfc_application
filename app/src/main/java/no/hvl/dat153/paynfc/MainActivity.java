@@ -13,8 +13,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import static java.lang.Integer.parseInt;
-
 public class MainActivity extends Activity {
 
     //public static String MIME_TYPE = "application/no.hvl.dat153.nfc_project";
@@ -52,12 +50,12 @@ public class MainActivity extends Activity {
 
             String amountString = amountField.getText().toString();
 
-            if (amountString == null) {
+            if (amountString == null || amountString.isEmpty()) {
                 Toast.makeText(this, "Please enter an amount.", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            int amount = Integer.parseInt(amountField.getText().toString());
+            int amount = Integer.parseInt(amountString.toString());
             final int currentBalance = getSharedPreferences("app_preferences", MODE_PRIVATE).getInt("balance", 100);
 
             if (amount < 0) {
@@ -70,6 +68,11 @@ public class MainActivity extends Activity {
 
                 startActivity(intent);
             }
+        });
+
+        Button addCurrencyBtn = findViewById(R.id.addCurrencyBtn);
+        addCurrencyBtn.setOnClickListener((View v) -> {
+            startActivity(new Intent(this, AddGrunkerActivity.class));
         });
     }
 
@@ -90,7 +93,7 @@ public class MainActivity extends Activity {
         nfcAdapter.setNdefPushMessage(null, this);
     }
 
-    void processIntent(Intent intent) {
+    private void processIntent(Intent intent) {
         Parcelable[] rawMessages = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
         // only one message sent during the beam
         NdefMessage message = (NdefMessage) rawMessages[0];

@@ -16,7 +16,7 @@ import static android.nfc.NdefRecord.createMime;
 
 public class PayActivity extends Activity {
 
-    private NfcAdapter mNfcAdapter;
+    private NfcAdapter nfcAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -33,8 +33,8 @@ public class PayActivity extends Activity {
         TextView amountView = findViewById(R.id.amountView);
         amountView.setText(String.valueOf(amount));
 
-        mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
-        if (mNfcAdapter == null) {
+        nfcAdapter = NfcAdapter.getDefaultAdapter(this);
+        if (nfcAdapter == null) {
             Toast.makeText(this, "NFC is not available", Toast.LENGTH_LONG).show();
             finish();
             return;
@@ -46,11 +46,11 @@ public class PayActivity extends Activity {
                 text.getBytes()
         )});
 
-        mNfcAdapter.setNdefPushMessage(msg, this);
+        nfcAdapter.setNdefPushMessage(msg, this);
 
-        mNfcAdapter.setOnNdefPushCompleteCallback((NfcEvent nfcEvent) -> {
-            //mNfcAdapter.disableForegroundDispatch(this);
-            mNfcAdapter.setNdefPushMessage(null, this);
+        nfcAdapter.setOnNdefPushCompleteCallback((NfcEvent nfcEvent) -> {
+            //nfcAdapter.disableForegroundDispatch(this);
+            nfcAdapter.setNdefPushMessage(null, this);
 
             appPref.edit().putInt("balance", balance - amount).apply();
 
