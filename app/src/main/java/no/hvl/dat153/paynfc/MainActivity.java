@@ -1,7 +1,9 @@
 package no.hvl.dat153.paynfc;
 
 import android.app.Activity;
+import android.app.PendingIntent;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.nfc.NdefMessage;
 import android.nfc.NfcAdapter;
@@ -15,7 +17,7 @@ import android.widget.Toast;
 
 public class MainActivity extends Activity {
 
-    //public static String MIME_TYPE = "application/no.hvl.dat153.nfc_project";
+    public static String MIME_TYPE = "application/no.hvl.dat153.nfc_project";
     private NfcAdapter nfcAdapter;
     private TextView balanceLabel;
     private EditText amountField;
@@ -40,22 +42,17 @@ public class MainActivity extends Activity {
             Toast.makeText(this, "You need to enable NFC to send/receive payments.", Toast.LENGTH_LONG).show();
         }
 
-        // Check to see that the Activity started due to an Android Beam
-        if (savedInstanceState == null && NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
-            processIntent(getIntent());
-        }
-
         Button paymentBtn = findViewById(R.id.paymentBtn);
         paymentBtn.setOnClickListener((View v) -> {
 
             String amountString = amountField.getText().toString();
 
-            if (amountString == null || amountString.isEmpty()) {
+            if (amountString.isEmpty()) {
                 Toast.makeText(this, "Please enter an amount.", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            int amount = Integer.parseInt(amountString.toString());
+            int amount = Integer.parseInt(amountString);
             final int currentBalance = getSharedPreferences("app_preferences", MODE_PRIVATE).getInt("balance", 100);
 
             if (amount < 0) {
@@ -74,23 +71,12 @@ public class MainActivity extends Activity {
         addCurrencyBtn.setOnClickListener((View v) -> {
             startActivity(new Intent(this, AddGrunkerActivity.class));
         });
-    }
 
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-        // update balanceLabel
-        final int currentBalance = getSharedPreferences("app_preferences", MODE_PRIVATE).getInt("balance", 100);
-        balanceLabel.setText(String.valueOf(currentBalance));
-
-        // clear amountField.
-        amountField.setText("");
-        amountField.clearFocus();
-
-        // set message to null to avoid resending NDEF payload.
-        nfcAdapter.setNdefPushMessage(null, this);
+        // Check to see that the Activity started due to an Android Beam
+        // and that the intent has not been parsed before
+        if (savedInstanceState == null && NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
+            processIntent(getIntent());
+        }
     }
 
     private void processIntent(Intent intent) {
@@ -117,5 +103,61 @@ public class MainActivity extends Activity {
         balanceLabel.setText(String.valueOf(newBalance));
 
         Toast.makeText(this, "Received " + String.valueOf(amount), Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        // update balanceLabel
+        final int currentBalance = getSharedPreferences("app_preferences", MODE_PRIVATE).getInt("balance", 100);
+        balanceLabel.setText(String.valueOf(currentBalance));
+
+        // clear amountField.
+        amountField.setText("");
+        amountField.clearFocus();
+
+        // set message to null to avoid resending NDEF payload.
+        nfcAdapter.setNdefPushMessage(null, this);
+
+        startForegroundDispatch(this, nfcAdapter);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        stopForegroundDispatch(this, nfcAdapter);
+    }
+
+    public static void startForegroundDispatch(final Activity activity, NfcAdapter adapter) {
+        final Intent intent = new Intent(activity.getApplicationContext(), activity.getClass());
+        intent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+        final PendingIntent pendingIntent = PendingIntent.getActivity(activity.getApplicationContext(), 0, intent, 0);
+
+        IntentFilter[] filters = new IntentFilter[1];
+        String[][] techList = new String[][]{};
+
+        // Notice that this is the same filter as in our manifest.
+        filters[0] = new IntentFilter();
+        filters[0].addAction(NfcAdapter.ACTION_NDEF_DISCOVERED);
+        filters[0].addCategory(Intent.CATEGORY_DEFAULT);
+        try {
+            filters[0].addDataType(MIME_TYPE);
+        } catch (IntentFilter.MalformedMimeTypeException e) {
+            throw new RuntimeException("Check your mime type.");
+        }
+
+        adapter.enableForegroundDispatch(activity, pendingIntent, filters, techList);
+    }
+
+    public static void stopForegroundDispatch(final Activity activity, NfcAdapter adapter) {
+        adapter.disableForegroundDispatch(activity);
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        processIntent(intent);
     }
 }
