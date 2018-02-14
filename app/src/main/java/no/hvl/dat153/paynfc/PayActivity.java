@@ -42,7 +42,7 @@ public class PayActivity extends Activity {
         }
 
 
-        String text = ("kos på os");
+        String text = (String.valueOf(amount));
         NdefMessage msg = new NdefMessage(new NdefRecord[] { createMime(
                 "application/no.hvl.dat153.nfc_project",
                 text.getBytes()
@@ -53,6 +53,8 @@ public class PayActivity extends Activity {
         mNfcAdapter.setOnNdefPushCompleteCallback((NfcEvent nfcEvent) -> {
             //mNfcAdapter.disableForegroundDispatch(this);
             mNfcAdapter.setNdefPushMessage(null, this);
+            appPref.edit().putInt("balance", balance - amount).apply();
+            Toast.makeText(this, "Transfer complete!", Toast.LENGTH_LONG).show();
             finish();
         }, this);
     }
