@@ -33,14 +33,12 @@ public class PayActivity extends Activity {
         TextView amountView = findViewById(R.id.amountView);
         amountView.setText(String.valueOf(amount));
 
-
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
         if (mNfcAdapter == null) {
             Toast.makeText(this, "NFC is not available", Toast.LENGTH_LONG).show();
             finish();
             return;
         }
-
 
         String text = (String.valueOf(amount));
         NdefMessage msg = new NdefMessage(new NdefRecord[] { createMime(
@@ -53,9 +51,20 @@ public class PayActivity extends Activity {
         mNfcAdapter.setOnNdefPushCompleteCallback((NfcEvent nfcEvent) -> {
             //mNfcAdapter.disableForegroundDispatch(this);
             mNfcAdapter.setNdefPushMessage(null, this);
-            appPref.edit().putInt("balance", balance - amount).apply();
-            Toast.makeText(this, "Transfer complete!", Toast.LENGTH_LONG).show();
-            finish();
+
+            this.runOnUiThread(() -> {
+                appPref.edit().putInt("balance", balance - amount).apply();
+                Toast.makeText(this, "Transfer complete!", Toast.LENGTH_LONG).show();
+                finish();
+            });
         }, this);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        mNfcAdapter.setNdefPushMessage(null, this);
+        mNfcAdapter.setOnNdefPushCompleteCallback(null, this);
     }
 }

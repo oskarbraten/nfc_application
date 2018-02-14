@@ -20,22 +20,21 @@ public class MainActivity extends Activity {
     //public static String MIME_TYPE = "application/no.hvl.dat153.nfc_project";
     private NfcAdapter nfcAdapter;
     private TextView balanceLabel;
+    private EditText amountField;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final int currentBalance = getSharedPreferences("app_preferences", MODE_PRIVATE).getInt("balance", 100);
-
+        amountField = findViewById(R.id.amountField);
         balanceLabel = findViewById(R.id.balanceLabel);
-        balanceLabel.setText(Integer.toString(currentBalance));
+        nfcAdapter = NfcAdapter.getDefaultAdapter(this);
 
         Button paymentBtn = findViewById(R.id.paymentBtn);
         paymentBtn.setOnClickListener((View v) -> {
-            EditText amountField = findViewById(R.id.amountField);
-
             int amount = parseInt(amountField.getText().toString());
+            final int currentBalance = getSharedPreferences("app_preferences", MODE_PRIVATE).getInt("balance", 100);
 
             if (amount < 0) {
                 Toast.makeText(this, "Invalid amount.", Toast.LENGTH_SHORT).show();
@@ -55,7 +54,13 @@ public class MainActivity extends Activity {
     public void onResume() {
         super.onResume();
 
-        nfcAdapter = NfcAdapter.getDefaultAdapter(this);
+        // update balanceLabel
+        final int currentBalance = getSharedPreferences("app_preferences", MODE_PRIVATE).getInt("balance", 100);
+        balanceLabel.setText(String.valueOf(currentBalance));
+
+        // clear amountField.
+        amountField.setText("");
+        amountField.clearFocus();
 
         if (nfcAdapter == null) {
             Toast.makeText(this, "This device does not support NFC.", Toast.LENGTH_LONG).show();
@@ -88,6 +93,12 @@ public class MainActivity extends Activity {
 
         // record 0 contains the MIME type, record 1 is the AAR, if present
         final int amount = Integer.parseInt(new String(message.getRecords()[0].getPayload()));
+
+        // abort transfer if amount is negative.
+        if (amount < 0) {
+            return;
+        }
+
         final int currentBalance = prefs.getInt("balance", 100);
 
         final int newBalance = currentBalance + amount;
