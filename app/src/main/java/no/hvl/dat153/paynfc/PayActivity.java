@@ -52,8 +52,9 @@ public class PayActivity extends Activity {
             //mNfcAdapter.disableForegroundDispatch(this);
             mNfcAdapter.setNdefPushMessage(null, this);
 
+            appPref.edit().putInt("balance", balance - amount).apply();
+
             this.runOnUiThread(() -> {
-                appPref.edit().putInt("balance", balance - amount).apply();
                 Toast.makeText(this, "Transfer complete!", Toast.LENGTH_LONG).show();
                 finish();
             });
