@@ -7,16 +7,34 @@ import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends Activity {
 
     private NfcAdapter nfcAdapter;
 
+    private TextView balanceLabel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        SharedPreferences appPref = getSharedPreferences("app_preferences", MODE_PRIVATE);
+        int balance = appPref.getInt("balance", Integer.MIN_VALUE);
+
+        if (balance == Integer.MIN_VALUE) {
+            appPref.edit().putInt("balance", 100);
+            appPref.edit().apply();
+
+            balance = 100;
+        }
+
+        balanceLabel = findViewById(R.id.balanceLabel);
+        balanceLabel.setText(Integer.toString(balance));
+
 
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
 
@@ -32,17 +50,16 @@ public class MainActivity extends Activity {
 
         Button paymentBtn = findViewById(R.id.paymentBtn);
         paymentBtn.setOnClickListener((View v) -> {
-            startActivity(new Intent(this, PayActivity.class));
+            EditText amountField = findViewById(R.id.amountField);
+
+            Intent intent = new Intent(this, PayActivity.class);
+            intent.putExtra("amount", Integer.parseInt(amountField.getText().toString()));
+
+            startActivity(intent);
         });
-
-
-        SharedPreferences appPref = getSharedPreferences("AppPref", MODE_PRIVATE);
-        float blance = appPref.getFloat("blance", Float.NEGATIVE_INFINITY);
-        if (blance == Float.NEGATIVE_INFINITY) {
-            appPref.edit().putFloat("blance", (float) 100.0);
-            appPref.edit().apply();
-        }
     }
+
+
 
 
 }

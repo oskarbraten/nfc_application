@@ -1,6 +1,7 @@
 package no.hvl.dat153.paynfc;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.nfc.NdefMessage;
 import android.nfc.NdefRecord;
@@ -21,12 +22,28 @@ public class PayActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pay);
 
+        SharedPreferences appPref = getSharedPreferences("app_preferences", MODE_PRIVATE);
+        int balance = appPref.getInt("balance", Integer.MIN_VALUE);
+
+        if (balance == Integer.MIN_VALUE) {
+            appPref.edit().putInt("balance", 100);
+            appPref.edit().apply();
+
+            balance = 100;
+        }
+
+        Intent intent = getIntent();
+
+        Integer amount = intent.getExtras().getInt("amount", 0);
+
+
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
         if (mNfcAdapter == null) {
             Toast.makeText(this, "NFC is not available", Toast.LENGTH_LONG).show();
             finish();
             return;
         }
+
 
         String text = ("kos på os");
         NdefMessage msg = new NdefMessage(new NdefRecord[] { createMime(
@@ -41,11 +58,5 @@ public class PayActivity extends Activity {
             mNfcAdapter.setNdefPushMessage(null, this);
             finish();
         }, this);
-
-        SharedPreferences appPref = getSharedPreferences("AppPref",MODE_PRIVATE);
-        float blance = appPref.getFloat("blance", Float.NEGATIVE_INFINITY);
-
-        Toast.makeText(this, "*****  " + blance, Toast.LENGTH_LONG).show();
-
     }
 }
