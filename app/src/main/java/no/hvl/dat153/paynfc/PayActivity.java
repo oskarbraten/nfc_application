@@ -8,6 +8,7 @@ import android.nfc.NdefRecord;
 import android.nfc.NfcAdapter;
 import android.nfc.NfcEvent;
 import android.os.Bundle;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import static android.nfc.NdefRecord.createMime;
@@ -23,18 +24,14 @@ public class PayActivity extends Activity {
         setContentView(R.layout.activity_pay);
 
         SharedPreferences appPref = getSharedPreferences("app_preferences", MODE_PRIVATE);
-        int balance = appPref.getInt("balance", Integer.MIN_VALUE);
-
-        if (balance == Integer.MIN_VALUE) {
-            appPref.edit().putInt("balance", 100);
-            appPref.edit().apply();
-
-            balance = 100;
-        }
+        final int balance = appPref.getInt("balance", 100);
 
         Intent intent = getIntent();
 
         Integer amount = intent.getExtras().getInt("amount", 0);
+
+        TextView amountView = findViewById(R.id.amountView);
+        amountView.setText(String.valueOf(amount));
 
 
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
