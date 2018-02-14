@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/NFC_project.iml" filepath="$PROJECT_DIR$/NFC_project.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/nfc_application.iml" filepath="$PROJECT_DIR$/.idea/nfc_application.iml" />
       <module fileurl="file://$PROJECT_DIR$/nfc_application.iml" filepath="$PROJECT_DIR$/nfc_application.iml" />
     </modules>
   </component>

@@ -36,7 +36,6 @@
             </intent-filter>
         </activity>
         <activity android:name="no.hvl.dat153.paynfc.PayActivity" />
-        <activity android:name="no.hvl.dat153.paynfc.PaymentActivity"></activity>
     </application>
 
 </manifest>
