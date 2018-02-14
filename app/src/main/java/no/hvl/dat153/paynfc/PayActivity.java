@@ -35,9 +35,13 @@ public class PayActivity extends Activity {
 
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
         if (nfcAdapter == null) {
-            Toast.makeText(this, "NFC is not available", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.msg_noNFCSupport, Toast.LENGTH_LONG).show();
             finish();
             return;
+        }
+
+        if (!nfcAdapter.isEnabled()) {
+            Toast.makeText(this, R.string.msg_NFCDisabled, Toast.LENGTH_LONG).show();
         }
 
         String text = (String.valueOf(amount));
@@ -49,18 +53,21 @@ public class PayActivity extends Activity {
         nfcAdapter.setNdefPushMessage(msg, this);
 
         nfcAdapter.setOnNdefPushCompleteCallback((NfcEvent nfcEvent) -> {
-            //nfcAdapter.disableForegroundDispatch(this);
+
+            // remove message.
             nfcAdapter.setNdefPushMessage(null, this);
 
             appPref.edit().putInt("balance", balance - amount).apply();
 
             this.runOnUiThread(() -> {
                 int newBalance = appPref.getInt("balance", 100);
+
                 if (newBalance == (balance - amount)) {
-                    Toast.makeText(this, "Transfer of " + amount + " tokens complete!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, getResources().getString(R.string.msg_transferComplete, amount), Toast.LENGTH_LONG).show();
                 } else {
-                    Toast.makeText(this, "Something went wrong!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, R.string.msg_genericError, Toast.LENGTH_LONG).show();
                 }
+
                 finish();
             });
         }, this);

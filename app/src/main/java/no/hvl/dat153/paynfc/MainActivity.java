@@ -33,13 +33,13 @@ public class MainActivity extends Activity {
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
 
         if (nfcAdapter == null) {
-            Toast.makeText(this, "This device does not support NFC.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.msg_noNFCSupport, Toast.LENGTH_LONG).show();
             finish();
             return;
         }
 
         if (!nfcAdapter.isEnabled()) {
-            Toast.makeText(this, "You need to enable NFC to send/receive payments.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.msg_NFCDisabled, Toast.LENGTH_LONG).show();
         }
 
         Button paymentBtn = findViewById(R.id.paymentBtn);
@@ -48,7 +48,7 @@ public class MainActivity extends Activity {
             String amountString = amountField.getText().toString();
 
             if (amountString.isEmpty()) {
-                Toast.makeText(this, "Please enter an amount.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.msg_noAmountSpecified, Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -56,9 +56,9 @@ public class MainActivity extends Activity {
             final int currentBalance = getSharedPreferences("app_preferences", MODE_PRIVATE).getInt("balance", 100);
 
             if (amount < 0) {
-                Toast.makeText(this, "Invalid amount.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.msg_invalidAmount, Toast.LENGTH_SHORT).show();
             } else if (currentBalance - amount < 0) {
-                Toast.makeText(this, "Not enough funds.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.msg_lackOfFunds, Toast.LENGTH_SHORT).show();
             } else {
                 Intent intent = new Intent(this, PayActivity.class);
                 intent.putExtra("amount", amount);

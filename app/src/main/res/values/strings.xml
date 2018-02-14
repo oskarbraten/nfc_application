@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">PayNFC</string>
+    <string name="msg_invalidAmount">Invalid amount.</string>
+    <string name="msg_lackOfFunds">Not enough funds.</string>
+    <string name="msg_noAmountSpecified">Please enter an amount.</string>
+    <string name="msg_noNFCSupport">This device does not support NFC.</string>
+    <string name="msg_NFCDisabled">You need to enable NFC to send/receive payments.</string>
+    <string name="msg_genericError">Something went wrong!</string>
+    <string name="msg_transferComplete">Transfer of %1$d Grunker complete!</string>
 </resources>
