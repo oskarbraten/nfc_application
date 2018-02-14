@@ -29,11 +29,35 @@ public class MainActivity extends Activity {
 
         amountField = findViewById(R.id.amountField);
         balanceLabel = findViewById(R.id.balanceLabel);
+
         nfcAdapter = NfcAdapter.getDefaultAdapter(this);
+
+        if (nfcAdapter == null) {
+            Toast.makeText(this, "This device does not support NFC.", Toast.LENGTH_LONG).show();
+            finish();
+            return;
+        }
+
+        if (!nfcAdapter.isEnabled()) {
+            Toast.makeText(this, "You need to enable NFC to send/receive payments.", Toast.LENGTH_LONG).show();
+        }
+
+        // Check to see that the Activity started due to an Android Beam
+        if (savedInstanceState == null && NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
+            processIntent(getIntent());
+        }
 
         Button paymentBtn = findViewById(R.id.paymentBtn);
         paymentBtn.setOnClickListener((View v) -> {
-            int amount = parseInt(amountField.getText().toString());
+
+            String amountString = amountField.getText().toString();
+
+            if (amountString == null) {
+                Toast.makeText(this, "Please enter an amount.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            int amount = Integer.parseInt(amountField.getText().toString());
             final int currentBalance = getSharedPreferences("app_preferences", MODE_PRIVATE).getInt("balance", 100);
 
             if (amount < 0) {
@@ -62,28 +86,10 @@ public class MainActivity extends Activity {
         amountField.setText("");
         amountField.clearFocus();
 
-        if (nfcAdapter == null) {
-            Toast.makeText(this, "This device does not support NFC.", Toast.LENGTH_LONG).show();
-            finish();
-            return;
-        }
-
-        if (!nfcAdapter.isEnabled()) {
-            Toast.makeText(this, "You need to enable NFC to send/receive payments.", Toast.LENGTH_LONG).show();
-        }
-
         // set message to null to avoid resending NDEF payload.
         nfcAdapter.setNdefPushMessage(null, this);
-
-        // Check to see that the Activity started due to an Android Beam
-        if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
-            processIntent(getIntent());
-        }
     }
 
-    /**
-     * Parses the NDEF Message from the intent and prints to the TextView
-     */
     void processIntent(Intent intent) {
         Parcelable[] rawMessages = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
         // only one message sent during the beam
@@ -106,5 +112,7 @@ public class MainActivity extends Activity {
         // update preferences, and label.
         prefs.edit().putInt("balance", newBalance).apply();
         balanceLabel.setText(String.valueOf(newBalance));
+
+        Toast.makeText(this, "Received " + String.valueOf(amount), Toast.LENGTH_LONG).show();
     }
 }
