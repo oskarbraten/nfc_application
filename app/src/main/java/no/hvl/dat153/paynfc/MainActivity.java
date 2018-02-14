@@ -41,6 +41,7 @@ public class MainActivity extends Activity {
         }
 
         // Check to see that the Activity started due to an Android Beam
+        // and that the intent has not been parced before
         if (savedInstanceState == null && NfcAdapter.ACTION_NDEF_DISCOVERED.equals(getIntent().getAction())) {
             processIntent(getIntent());
         }
