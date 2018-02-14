@@ -55,7 +55,12 @@ public class PayActivity extends Activity {
             appPref.edit().putInt("balance", balance - amount).apply();
 
             this.runOnUiThread(() -> {
-                Toast.makeText(this, "Transfer complete!", Toast.LENGTH_LONG).show();
+                int newBalance = appPref.getInt("balance", 100);
+                if (newBalance == (balance - amount)) {
+                    Toast.makeText(this, "Transfer of " + amount + " tokens complete!", Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(this, "Something went wrong!", Toast.LENGTH_LONG).show();
+                }
                 finish();
             });
         }, this);
