@@ -2,6 +2,7 @@ package no.hvl.dat153.paynfc;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.nfc.NfcAdapter;
 import android.os.Bundle;
 import android.view.View;
@@ -33,6 +34,14 @@ public class MainActivity extends Activity {
         paymentBtn.setOnClickListener((View v) -> {
             startActivity(new Intent(this, PayActivity.class));
         });
+
+
+        SharedPreferences appPref = getSharedPreferences("AppPref", MODE_PRIVATE);
+        float blance = appPref.getFloat("blance", Float.NEGATIVE_INFINITY);
+        if (blance == Float.NEGATIVE_INFINITY) {
+            appPref.edit().putFloat("blance", (float) 100.0);
+            appPref.edit().apply();
+        }
     }
 
 
