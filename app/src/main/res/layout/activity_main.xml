@@ -63,7 +63,7 @@
         android:layout_marginTop="8dp"
         android:ems="10"
         android:hint="Amount.."
-        android:inputType="textPersonName|numberDecimal"
+        android:inputType="number"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/main_textView2" />
