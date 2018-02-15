@@ -2,6 +2,7 @@ package no.hvl.dat153.paynfc;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
+import android.nfc.NfcAdapter;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -10,10 +11,32 @@ import android.widget.Toast;
 
 public class AddGrunkerActivity extends Activity {
 
+    private NfcAdapter nfcAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_grunker);
+
+        nfcAdapter = NfcAdapter.getDefaultAdapter(this);
+
+        if (nfcAdapter == null) {
+            Toast.makeText(this, R.string.msg_noNFCSupport, Toast.LENGTH_LONG).show();
+            finish();
+            return;
+        }
+
+        if (!nfcAdapter.isEnabled()) {
+            Toast.makeText(this, R.string.msg_NFCDisabled, Toast.LENGTH_LONG).show();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        // set message to null to avoid resending NDEF payload.
+        nfcAdapter.setNdefPushMessage(null, this);
     }
 
     public void onClickAdd(View v) {
