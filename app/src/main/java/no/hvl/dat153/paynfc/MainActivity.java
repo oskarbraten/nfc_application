@@ -15,6 +15,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.NumberFormat;
+import java.util.Locale;
+
 public class MainActivity extends Activity {
 
     public static String MIME_TYPE = "application/no.hvl.dat153.nfc_project";
@@ -100,7 +103,7 @@ public class MainActivity extends Activity {
 
         // update preferences, and label.
         prefs.edit().putInt("balance", newBalance).apply();
-        balanceLabel.setText(String.valueOf(newBalance));
+        balanceLabel.setText(NumberFormat.getInstance(Locale.FRENCH).format(newBalance));
 
         Toast.makeText(this, "Received " + String.valueOf(amount), Toast.LENGTH_LONG).show();
     }
@@ -111,7 +114,7 @@ public class MainActivity extends Activity {
 
         // update balanceLabel
         final int currentBalance = getSharedPreferences("app_preferences", MODE_PRIVATE).getInt("balance", 100);
-        balanceLabel.setText(String.valueOf(currentBalance));
+        balanceLabel.setText(NumberFormat.getInstance(Locale.FRENCH).format(currentBalance));
 
         // clear amountField.
         amountField.setText("");
