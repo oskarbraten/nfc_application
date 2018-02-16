@@ -44,8 +44,8 @@ public class AddGrunkerActivity extends Activity {
         String addAmount = addGrunkerAmount.getText().toString();
         SharedPreferences appPref = getSharedPreferences("app_preferences", MODE_PRIVATE);
 
-        if (addAmount.equals("")) {
-            Toast.makeText(this, "Please enter an amount", Toast.LENGTH_SHORT).show();
+        if (!addAmount.matches("^[1-9]+\\d*$")) {
+            addGrunkerAmount.setError("Please enter a valid amount");
         } else {
             Integer addAmountInt = Integer.valueOf(addAmount);
 
