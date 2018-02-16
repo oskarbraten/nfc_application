@@ -62,4 +62,14 @@ public class AddGrunkerActivity extends Activity {
             }
         }
     }
+
+    public void onClickClear(View v) {
+        EditText et = findViewById(R.id.addGrunkerAmount);
+
+        et.setText("");
+    }
+
+    public void onClickBack(View v) {
+        finish();
+    }
 }
